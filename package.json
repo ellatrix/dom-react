@@ -1,0 +1,38 @@
+{
+  "name": "dom-react",
+  "version": "1.0.0",
+  "description": "Maps DOM to React DOM.",
+  "homepage": "https://github.com/iseulde/dom-react",
+  "bugs": {
+    "url": "https://github.com/iseulde/dom-react/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/iseulde/dom-react.git"
+  },
+  "main": "index.dist.js",
+  "scripts": {
+    "prepublish": "babel index.js --out-file index.dist.js",
+    "style": "standard --fix index.js index.test.js",
+    "test": "mocha index.test.js --compilers js:babel-register"
+  },
+  "author": {
+    "name": "Ella van Dorpe",
+    "email": "ella@iseulde.com",
+    "url": "https://iseulde.com"
+  },
+  "license": "GPL-3.0",
+  "peerDependencies": {
+    "react": "*"
+  },
+  "devDependencies": {
+    "babel-cli": "6.x.x",
+    "babel-preset-es2015": "6.x.x",
+    "babel-register": "6.x.x",
+    "jsdom": "10.x.x",
+    "mocha": "3.x.x",
+    "react": "*",
+    "react-dom": "*",
+    "standard": "*"
+  }
+}
