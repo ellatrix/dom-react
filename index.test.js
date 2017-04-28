@@ -56,6 +56,10 @@ describe('nodeToReact()', () => {
     {
       description: 'should return React element with children for DOM element with children',
       HTML: '<p>test <strong>test</strong></p>'
+    },
+    {
+      description: 'should return React element with style for DOM element with style',
+      HTML: '<p style="-webkit-box-shadow:1px 1px 1px rgba(0,0,0,0.75);">test</p>'
     }
   ].forEach(({ description, HTML }) => {
     it(description, () => {

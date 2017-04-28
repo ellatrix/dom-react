@@ -78,12 +78,30 @@ const attributeMap = [
 
 attributeMap['class'] = 'className'
 
+function camelCase (string) {
+  return string.toLowerCase().replace(/-([a-z])/g, (match, $1) => $1.toUpperCase())
+}
+
+function styleStringToJSON (string = '') {
+  return string.split(';').reduce((accumulator, piece) => {
+    const pair = piece.split(':')
+    const key = camelCase(pair[0] || '').trim()
+    const value = (pair[1] || '').trim()
+
+    if (key && value) {
+      accumulator[key] = value
+    }
+
+    return accumulator
+  }, {})
+}
+
 export function attributeListToReact (attributeList) {
   return [...attributeList].reduce((accumulator, { name, value }) => {
     let key = attributeMap[name.replace(/[-:]/, '')] || name
 
     if (key === 'style') {
-      return accumulator
+      value = styleStringToJSON(value)
     }
 
     accumulator[key] = value
