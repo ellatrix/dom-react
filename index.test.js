@@ -1,6 +1,7 @@
 import { describe, it } from 'mocha'
 import { equal } from 'assert'
 import { JSDOM } from 'jsdom'
+import { createElement } from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
 
 import { nodeToReact } from '.'
@@ -20,7 +21,7 @@ describe('nodeToReact()', () => {
     }
   ].forEach(({ description, text }) => {
     it(description, () => {
-      equal(text, nodeToReact(text))
+      equal(text, nodeToReact(text, createElement))
     })
   });
 
@@ -35,7 +36,7 @@ describe('nodeToReact()', () => {
     }
   ].forEach(({ description, text }) => {
     it(description, () => {
-      equal(text, nodeToReact(document.createTextNode(text)))
+      equal(text, nodeToReact(document.createTextNode(text), createElement))
     })
   });
 
@@ -59,7 +60,35 @@ describe('nodeToReact()', () => {
   ].forEach(({ description, HTML }) => {
     it(description, () => {
       document.body.innerHTML = HTML
-      equal(HTML, renderToStaticMarkup(nodeToReact(document.body.firstChild)))
+      equal(HTML, renderToStaticMarkup(nodeToReact(document.body.firstChild, createElement)))
     })
+  })
+
+  it('should return React element without filtered attribute', () => {
+    document.body.innerHTML = '<p data-test="true">test</p>'
+    equal('<p>test</p>', renderToStaticMarkup(nodeToReact(document.body.firstChild, (type, props, ...children) => {
+      delete props['data-test']
+      return createElement(type, props, ...children)
+    })))
+  })
+
+  it('should return React element without filtered child', () => {
+    document.body.innerHTML = '<p>test <span data-test="true">test <strong>test</strong></span></p>'
+    equal('<p>test </p>', renderToStaticMarkup(nodeToReact(document.body.firstChild, (type, props, ...children) => {
+      if (!props['data-test']) {
+        return createElement(type, props, ...children)
+      }
+    })))
+  })
+
+  it('should return React element without filtered tag', () => {
+    document.body.innerHTML = '<p>test <span data-test="true">test <strong>test</strong></span></p>'
+    equal('<p>test test <strong>test</strong></p>', renderToStaticMarkup(nodeToReact(document.body.firstChild, (type, props, ...children) => {
+      if (!props['data-test']) {
+        return createElement(type, props, ...children)
+      } else {
+        return children
+      }
+    })))
   })
 })

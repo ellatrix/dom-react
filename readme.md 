@@ -2,4 +2,4 @@
 
 Maps DOM to React DOM.
 
-`nodeToReact( node: Node, index: ?Number ): Object`
+`nodeToReact( node: Node, createElement: Function ): Object`

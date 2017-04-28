@@ -1,5 +1,3 @@
-import { createElement } from 'react'
-
 const HTML_ATTRIBUTES = [
   'accept', 'acceptCharset', 'accessKey', 'action', 'allowFullScreen', 'allowTransparency',
   'alt', 'async', 'autoComplete', 'autoFocus', 'autoPlay', 'capture', 'cellPadding',
@@ -78,7 +76,37 @@ const attributeMap = [
   return accumulator
 }, {})
 
-export function nodeToReact (node, index) {
+attributeMap['class'] = 'className'
+
+export function attributeListToReact (attributeList) {
+  return [...attributeList].reduce((accumulator, { name, value }) => {
+    let key = attributeMap[name.replace(/[-:]/, '')] || name
+
+    if (key === 'style') {
+      return accumulator
+    }
+
+    accumulator[key] = value
+
+    return accumulator
+  }, {})
+}
+
+export function nodeListToReact (nodeList, createElement) {
+  return [...nodeList].reduce((accumulator, node) => {
+    const child = nodeToReact(node, createElement)
+
+    if (Array.isArray(child)) {
+      accumulator.push(...child)
+    } else {
+      accumulator.push(child)
+    }
+
+    return accumulator
+  }, [])
+}
+
+export function nodeToReact (node, createElement) {
   if (!node) {
     return null
   }
@@ -93,29 +121,15 @@ export function nodeToReact (node, index) {
 
   const type = node.nodeName.toLowerCase()
 
-  let props = { key: index }
+  let props = {}
   let children = []
 
   if (node.hasAttributes()) {
-    props = [...node.attributes].reduce((result, { name, value }) => {
-      let key = attributeMap[name.replace(/[-:]/, '')] || name
-
-      if (key === 'style') {
-        return result
-      }
-
-      if (key === 'class') {
-        key = 'className'
-      }
-
-      result[key] = value
-
-      return result
-    }, props)
+    props = attributeListToReact(node.attributes)
   }
 
   if (node.hasChildNodes()) {
-    children = [...node.childNodes].map(nodeToReact)
+    children = nodeListToReact(node.childNodes, createElement)
   }
 
   return createElement(type, props, ...children)
