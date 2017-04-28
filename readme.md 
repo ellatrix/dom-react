@@ -1,5 +1,0 @@
-# `dom-react`
-
-Maps DOM to React DOM.
-
-`nodeToReact( node: Node, createElement: Function ): Object`
