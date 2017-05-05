@@ -4,7 +4,7 @@ import { JSDOM } from 'jsdom'
 import { createElement } from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
 
-import { nodeToReact } from './index'
+import { nodeListToReact, nodeToReact } from './index'
 
 const { window } = new JSDOM()
 const { document } = window
@@ -94,5 +94,30 @@ describe('nodeToReact()', () => {
         return children
       }
     })))
+  })
+
+  describe('nodeListToReact', () => {
+    it('should return array of React element with key assigned by child index', () => {
+      document.body.innerHTML = '<p>test <span>test</span></p><strong>test</strong>'
+      const elements = nodeListToReact(document.body.childNodes, createElement)
+
+      equal('0', elements[0].key)
+      equal('string', typeof elements[0].props.children[0])
+      equal('1', elements[0].props.children[1].key)
+      equal('1', elements[1].key)
+    })
+
+    it('should reuse assigned key for same elements reference', () => {
+      document.body.innerHTML = '<ul><li>one</li><li>two</li></ul>'
+      const list = document.body.firstChild
+      let elements = nodeListToReact(list.childNodes, createElement)
+
+      // Rearrange second list item before first
+      list.insertBefore(list.lastChild, list.firstChild)
+
+      elements = nodeListToReact(list.childNodes, createElement)
+      equal('1', elements[0].key)
+      equal('0', elements[1].key)
+    })
   })
 })

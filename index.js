@@ -111,7 +111,11 @@ export function attributeListToReact (attributeList) {
 }
 
 export function nodeListToReact (nodeList, createElement) {
-  return [...nodeList].reduce((accumulator, node) => {
+  return [...nodeList].reduce((accumulator, node, index) => {
+    if (!node._domReactKey) {
+      node._domReactKey = String(index)
+    }
+
     const child = nodeToReact(node, createElement)
 
     if (Array.isArray(child)) {
@@ -144,6 +148,10 @@ export function nodeToReact (node, createElement) {
 
   if (node.hasAttributes()) {
     props = attributeListToReact(node.attributes)
+  }
+
+  if (node._domReactKey) {
+    props.key = node._domReactKey
   }
 
   if (node.hasChildNodes()) {
