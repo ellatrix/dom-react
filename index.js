@@ -110,10 +110,12 @@ export function attributeListToReact (attributeList) {
   }, {})
 }
 
+let keyCounter = 0
+
 export function nodeListToReact (nodeList, createElement) {
-  return [...nodeList].reduce((accumulator, node, index) => {
+  return [...nodeList].reduce((accumulator, node) => {
     if (!node._domReactKey) {
-      node._domReactKey = String(index)
+      node._domReactKey = '_domReact' + String(keyCounter++)
     }
 
     const child = nodeToReact(node, createElement)

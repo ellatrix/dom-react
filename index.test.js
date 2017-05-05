@@ -1,5 +1,5 @@
 import { describe, it } from 'mocha'
-import { equal } from 'assert'
+import { equal, ok } from 'assert'
 import { JSDOM } from 'jsdom'
 import { createElement } from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
@@ -97,14 +97,19 @@ describe('nodeToReact()', () => {
   })
 
   describe('nodeListToReact', () => {
+    const rxKey = /^_domReact\d+$/
+    function assertKey (key) {
+      ok(rxKey.test(key), 'expected to match key pattern ' + rxKey.toString())
+    }
+
     it('should return array of React element with key assigned by child index', () => {
       document.body.innerHTML = '<p>test <span>test</span></p><strong>test</strong>'
       const elements = nodeListToReact(document.body.childNodes, createElement)
 
-      equal('0', elements[0].key)
+      assertKey(elements[0].key)
       equal('string', typeof elements[0].props.children[0])
-      equal('1', elements[0].props.children[1].key)
-      equal('1', elements[1].key)
+      assertKey(elements[0].props.children[1].key)
+      assertKey(elements[1].key)
     })
 
     it('should reuse assigned key for same elements reference', () => {
@@ -116,8 +121,8 @@ describe('nodeToReact()', () => {
       list.insertBefore(list.lastChild, list.firstChild)
 
       elements = nodeListToReact(list.childNodes, createElement)
-      equal('1', elements[0].key)
-      equal('0', elements[1].key)
+      assertKey(elements[0].key)
+      assertKey(elements[1].key)
     })
   })
 })
