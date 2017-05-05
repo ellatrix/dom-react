@@ -1,5 +1,5 @@
 import { describe, it } from 'mocha'
-import { equal, ok } from 'assert'
+import { equal, ok, deepEqual } from 'assert'
 import { JSDOM } from 'jsdom'
 import { createElement } from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
@@ -115,14 +115,16 @@ describe('nodeToReact()', () => {
     it('should reuse assigned key for same elements reference', () => {
       document.body.innerHTML = '<ul><li>one</li><li>two</li></ul>'
       const list = document.body.firstChild
-      let elements = nodeListToReact(list.childNodes, createElement)
+      const before = nodeListToReact(list.childNodes, createElement)
 
       // Rearrange second list item before first
       list.insertBefore(list.lastChild, list.firstChild)
 
-      elements = nodeListToReact(list.childNodes, createElement)
-      assertKey(elements[0].key)
-      assertKey(elements[1].key)
+      const after = nodeListToReact(list.childNodes, createElement)
+      deepEqual(
+        before.map(({key}) => key),
+        after.map(({key}) => key).reverse()
+      )
     })
   })
 })
