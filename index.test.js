@@ -4,7 +4,7 @@ import { JSDOM } from 'jsdom'
 import { createElement } from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
 
-import { nodeToReact } from '.'
+import { nodeToReact } from './index'
 
 const { window } = new JSDOM()
 const { document } = window
