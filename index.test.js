@@ -95,36 +95,36 @@ describe('nodeToReact()', () => {
       }
     })))
   })
+})
 
-  describe('nodeListToReact', () => {
-    const rxKey = /^_domReact\d+$/
-    function assertKey (key) {
-      ok(rxKey.test(key), 'expected to match key pattern ' + rxKey.toString())
-    }
+describe('nodeListToReact', () => {
+  const rxKey = /^_domReact\d+$/
+  function assertKey (key) {
+    ok(rxKey.test(key), 'expected to match key pattern ' + rxKey.toString())
+  }
 
-    it('should return array of React element with key assigned by child index', () => {
-      document.body.innerHTML = '<p>test <span>test</span></p><strong>test</strong>'
-      const elements = nodeListToReact(document.body.childNodes, createElement)
+  it('should return array of React element with key assigned by child index', () => {
+    document.body.innerHTML = '<p>test <span>test</span></p><strong>test</strong>'
+    const elements = nodeListToReact(document.body.childNodes, createElement)
 
-      assertKey(elements[0].key)
-      equal('string', typeof elements[0].props.children[0])
-      assertKey(elements[0].props.children[1].key)
-      assertKey(elements[1].key)
-    })
+    assertKey(elements[0].key)
+    equal('string', typeof elements[0].props.children[0])
+    assertKey(elements[0].props.children[1].key)
+    assertKey(elements[1].key)
+  })
 
-    it('should reuse assigned key for same elements reference', () => {
-      document.body.innerHTML = '<ul><li>one</li><li>two</li></ul>'
-      const list = document.body.firstChild
-      const before = nodeListToReact(list.childNodes, createElement)
+  it('should reuse assigned key for same elements reference', () => {
+    document.body.innerHTML = '<ul><li>one</li><li>two</li></ul>'
+    const list = document.body.firstChild
+    const before = nodeListToReact(list.childNodes, createElement)
 
-      // Rearrange second list item before first
-      list.insertBefore(list.lastChild, list.firstChild)
+    // Rearrange second list item before first
+    list.insertBefore(list.lastChild, list.firstChild)
 
-      const after = nodeListToReact(list.childNodes, createElement)
-      deepEqual(
-        before.map(({key}) => key),
-        after.map(({key}) => key).reverse()
-      )
-    })
+    const after = nodeListToReact(list.childNodes, createElement)
+    deepEqual(
+      before.map(({key}) => key),
+      after.map(({key}) => key).reverse()
+    )
   })
 })
