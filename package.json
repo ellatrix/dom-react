@@ -21,7 +21,7 @@
     "email": "ella@iseulde.com",
     "url": "https://iseulde.com"
   },
-  "license": "GPL-3.0",
+  "license": "GPL-2.0-or-later",
   "devDependencies": {
     "babel-cli": "6.x.x",
     "babel-plugin-transform-runtime": "6.x.x",
