@@ -1,6 +1,6 @@
 {
   "name": "dom-react",
-  "version": "2.2.0",
+  "version": "2.2.1",
   "description": "Maps DOM to React DOM.",
   "homepage": "https://github.com/iseulde/dom-react",
   "bugs": {
